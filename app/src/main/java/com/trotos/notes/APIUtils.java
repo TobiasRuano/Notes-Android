@@ -25,9 +25,9 @@ public interface APIUtils {
     Call<ResponseNotes> getNotes(@Header("Authorization") String auth);
 
     @HTTP(method = "POST", path = "user/", hasBody = true)
-    Call<ResponseSaveNote> saveNote(@Body Note note);
+    Call<ResponseSaveNote> saveNote(@Body Note note, @Header("Authorization") String auth);
 
     @HTTP(method = "DELETE", path = "user/", hasBody = true)
-    Call<String> deleteNote(@Body Note note);
+    Call<String> deleteNote(@Body Note note, @Header("Authorization") String auth);
 
 }

@@ -1,5 +1,6 @@
-package com.trotos.notes.ui;
+package com.trotos.notes;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -40,11 +41,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private FragmentHomeBinding binding;
     SwipeRefreshLayout mSwipeRefreshLayout;
     AdapterNotes adapter;
-    private List<Note> notes = new ArrayList<Note>();
+    private final List<Note> notes = new ArrayList<Note>();
 
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -59,11 +58,22 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         RecyclerView notesReciclerView = binding.notesReciclerView;
         notesReciclerView.setHasFixedSize(true);
         notesReciclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new AdapterNotes(getContext(), notes);
+        adapter = new AdapterNotes(getContext(), notes, new AdapterNotes.OnItemClickListener() {
+            @Override
+            public void onItemClick(Note item) {
+                toNoteEditActivity(item);
+            }
+        });
         notesReciclerView.setAdapter(adapter);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) binding.swipeContainer;
         mSwipeRefreshLayout.setOnRefreshListener(this);
+    }
+
+    private void toNoteEditActivity(Note item) {
+        Intent intent = new Intent(getActivity(), NoteEditing.class);
+        intent.putExtra("note", item);
+        startActivity(intent);
     }
 
     private void getNotes() {
@@ -82,11 +92,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public void onResponse(Call<ResponseNotes> call, Response<ResponseNotes> response) {
                 if(response.isSuccessful()) {
                     ResponseNotes responseNotes = response.body();
-                    notes.clear();
-                    notes.addAll(responseNotes.getData());
-                    adapter.notifyDataSetChanged();
+                    if (responseNotes != null) {
+                        notes.clear();
+                        notes.addAll(responseNotes.getData());
+                        adapter.notifyDataSetChanged();
+                    }
                 } else {
-                    Toast toast2 = Toast.makeText(getContext(), "Error al obtener las tarjetas: " + response.code() + " " + response.message(), Toast.LENGTH_LONG);
+                    Toast toast2 = Toast.makeText(getContext(), "Error al obtener las Notas: ", Toast.LENGTH_LONG);
                     toast2.show();
                 }
             }

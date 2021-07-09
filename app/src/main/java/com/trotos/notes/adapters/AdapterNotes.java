@@ -20,10 +20,12 @@ import java.util.List;
 public class AdapterNotes extends RecyclerView.Adapter<AdapterNotes.ViewHolder> {
     private List<Note> notes;
     private Context context;
+    final OnItemClickListener listener;
 
-    public AdapterNotes(Context c, List<Note> notes) {
+    public AdapterNotes(Context c, List<Note> notes, OnItemClickListener listener) {
         this.context = c;
         this.notes = notes;
+        this.listener = listener;
     }
 
     @NotNull
@@ -37,6 +39,10 @@ public class AdapterNotes extends RecyclerView.Adapter<AdapterNotes.ViewHolder> 
     @Override
     public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
         holder.bindData(notes.get(position));
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Note item);
     }
 
     @Override
@@ -60,6 +66,12 @@ public class AdapterNotes extends RecyclerView.Adapter<AdapterNotes.ViewHolder> 
             noteTitleTextView.setText(item.getTitle());
             noteDescriptionTextView.setText(item.getContent());
             noteDateTextView.setText(item.getUpdatedAt());
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(item);
+                }
+            });
         }
     }
 }
