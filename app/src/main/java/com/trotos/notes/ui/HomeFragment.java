@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.trotos.notes.APIUtils;
 import com.trotos.notes.R;
@@ -34,9 +35,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private FragmentHomeBinding binding;
+    SwipeRefreshLayout mSwipeRefreshLayout;
     AdapterNotes adapter;
     private List<Note> notes = new ArrayList<Note>();
 
@@ -59,6 +61,9 @@ public class HomeFragment extends Fragment {
         notesReciclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new AdapterNotes(getContext(), notes);
         notesReciclerView.setAdapter(adapter);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) binding.swipeContainer;
+        mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
     private void getNotes() {
@@ -77,6 +82,7 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call<ResponseNotes> call, Response<ResponseNotes> response) {
                 if(response.isSuccessful()) {
                     ResponseNotes responseNotes = response.body();
+                    notes.clear();
                     notes.addAll(responseNotes.getData());
                     adapter.notifyDataSetChanged();
                 } else {
@@ -97,5 +103,11 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onRefresh() {
+        getNotes();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 }

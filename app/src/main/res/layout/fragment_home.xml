@@ -6,12 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".ui.HomeFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/notesReciclerView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:context=".ui.HomeFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/notesReciclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
