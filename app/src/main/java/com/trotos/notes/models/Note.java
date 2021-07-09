@@ -1,7 +1,14 @@
 package com.trotos.notes.models;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.text.Format;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Note {
 
@@ -19,10 +26,15 @@ public class Note {
     private int userId;
     @SerializedName("createdAt")
     @Expose
-    private String createdAt;
+    private Date createdAt;
     @SerializedName("updatedAt")
     @Expose
-    private String updatedAt;
+    private Date updatedAt;
+
+    private String parseDate() {
+        @SuppressLint("SimpleDateFormat") Format formatter = new SimpleDateFormat("dd MMM yyyy, HH:mm");
+        return formatter.format(updatedAt);
+    }
 
     public int getId() {
         return id;
@@ -57,18 +69,18 @@ public class Note {
     }
 
     public String getCreatedAt() {
-        return createdAt;
+        return parseDate();
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
     public String getUpdatedAt() {
-        return updatedAt;
+        return parseDate();
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 

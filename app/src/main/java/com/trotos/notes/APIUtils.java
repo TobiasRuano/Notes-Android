@@ -11,6 +11,7 @@ import com.trotos.notes.models.responseModels.ResponseSignUp;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.HTTP;
+import retrofit2.http.Header;
 
 public interface APIUtils {
 
@@ -21,7 +22,7 @@ public interface APIUtils {
     Call<ResponseSignUp> signUp(@Body User user);
 
     @HTTP(method = "POST", path = "user/getnotes", hasBody = true)
-    Call<ResponseNotes> getNotes(@Body String token);
+    Call<ResponseNotes> getNotes(@Header("Authorization") String auth);
 
     @HTTP(method = "POST", path = "user/", hasBody = true)
     Call<ResponseSaveNote> saveNote(@Body Note note);
